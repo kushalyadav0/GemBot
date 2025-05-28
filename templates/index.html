@@ -3,6 +3,9 @@
 {% block title %}index{% endblock title %}
 {% block content %}
 <div>
+    <div>
+        {{history}}
+    </div>
     <div id = 'chat'>
         <div id="question">
             {{question}}
@@ -14,7 +17,7 @@
     </div>
 
     <div id = 'input'>
-        <p><b>Ask whatever tou want-</b></p>
+        <p class="bg-cyan-600"><b>Ask whatever tou want-</b></p>
         <form action="" method="post">
             {% csrf_token %}
             {{form.as_p}}
