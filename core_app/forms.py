@@ -5,4 +5,4 @@ from .models import *
 class InputForm(ModelForm):
     class Meta:
         model = Chat
-        fields = "question"
+        fields = ("question",)

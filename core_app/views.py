@@ -12,18 +12,23 @@ def index(request):
     form = InputForm()
     if request.method == 'POST':
         form = InputForm(request.POST)
+        
         if form.is_valid():
             form.save()
+            question = request.POST.get('question') 
 
             load_dotenv()
             API_KEY = os.getenv("GOOGLR_API_KEY")
             client = genai.Client(api_key=API_KEY)
+
             response = client.models.generate_content(
             model="gemini-2.0-flash", 
-            contents="Explain how AI works in a few words"
+            contents= question
             )
-    return render(request, 'index.html', {'form': form, })
+            answer = response.text
+            return render(request=request, template_name='index.html', context={'form': form,'response': answer,'question':question })
     
+    return render(request=request, template_name='index.html', context={'form': form,})
     
 
 def about(request):
