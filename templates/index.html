@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block title %}index{% endblock title %}
+{% block content %}
+<div>
+    <div id = 'chat'>
+
+    </div>
+
+    <div id = 'input'>
+        <p><b>Ask whatever tou want-</b></p>
+        <form action="" method="post">
+            {% csrf_token %}
+            {{form.as_p}}
+            <button type="submit">Answer</button>
+
+        </form>
+    </div>
+</div>
+{% endblock content %}
