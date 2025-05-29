@@ -2,9 +2,13 @@
 
 {% block title %}index{% endblock title %}
 {% block content %}
-<div>
+<div class="item-centre">
     <div>
-        {{history}}
+        <ul>
+            {% for hist in history %}
+            <li>{{hist.question}} - {{hist.answer}} </li>
+            {% endfor %}
+        </ul>
     </div>
     <div id = 'chat'>
         <div id="question">

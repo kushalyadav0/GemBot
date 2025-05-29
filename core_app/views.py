@@ -14,7 +14,7 @@ def index(request):
         form = InputForm(request.POST)
         
         if form.is_valid():
-            form.save()
+        
             history = Chat.objects.all()
             question = request.POST.get('question') 
 
@@ -27,6 +27,7 @@ def index(request):
             contents= question
             )
             answer = response.text
+            form.save()
             return render(request=request, template_name='index.html', context={'form': form,'response': answer,'question':question, 'history':history })
     
     return render(request=request, template_name='index.html', context={'form': form,})
