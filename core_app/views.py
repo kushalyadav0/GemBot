@@ -1,9 +1,7 @@
 from dotenv import load_dotenv
 import os
-from django.http import HttpRequest
 from django.shortcuts import render, HttpResponse
 from google import genai
-from openai import api_key
 from .models import *
 from .forms import * 
 
@@ -19,7 +17,7 @@ def index(request):
             question = request.POST.get('question') 
 
             load_dotenv()
-            API_KEY = os.getenv("GOOGLR_API_KEY")
+            API_KEY = os.getenv("GOOGLE_API_KEY")
             client = genai.Client(api_key=API_KEY)
 
             response = client.models.generate_content(
@@ -27,8 +25,9 @@ def index(request):
             contents= question
             )
             answer = response.text
+            history = Chat.objects.all()
             form.save()
-            return render(request=request, template_name='index.html', context={'form': form,'response': answer,'question':question, 'history':history })
+            return render(request=request, template_name='index.html', context={'form': form,'response': answer,'question':question, 'history':history, 'answer':answer })
     
     return render(request=request, template_name='index.html', context={'form': form,})
     
