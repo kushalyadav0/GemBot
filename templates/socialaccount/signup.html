@@ -1,0 +1,95 @@
+{% extends "socialaccount/base_entrance.html" %}
+{% load i18n %}
+{% load allauth %}
+{% block head_title %}
+    {% trans "Signup" %}
+{% endblock head_title %}
+{% block content %}
+<style>
+    .signup-container {
+        max-width: 400px;
+        margin: 40px auto;
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+        padding: 2.5rem 2rem 2rem 2rem;
+        font-family: 'Segoe UI', Arial, sans-serif;
+    }
+    .signup-title {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #22223b;
+        margin-bottom: 0.5rem;
+        text-align: center;
+    }
+    .signup-desc {
+        color: #4a4e69;
+        font-size: 1.05rem;
+        margin-bottom: 1.5rem;
+        text-align: center;
+    }
+    .signup-form .form-group {
+        margin-bottom: 1.2rem;
+    }
+    .signup-form input, .signup-form select {
+        width: 100%;
+        padding: 0.7rem 0.9rem;
+        border: 1px solid #c9c9c9;
+        border-radius: 6px;
+        font-size: 1rem;
+        background: #f8f8fa;
+        transition: border 0.2s;
+    }
+    .signup-form input:focus, .signup-form select:focus {
+        border-color: #5f6dfa;
+        outline: none;
+    }
+    .signup-btn {
+        width: 100%;
+        padding: 0.8rem 0;
+        background: linear-gradient(90deg, #5f6dfa 0%, #48bfe3 100%);
+        color: #fff;
+        font-size: 1.1rem;
+        font-weight: 600;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: background 0.2s;
+        margin-top: 0.5rem;
+    }
+    .signup-btn:hover {
+        background: linear-gradient(90deg, #48bfe3 0%, #5f6dfa 100%);
+    }
+</style>
+<div class="signup-container">
+    <div class="signup-title">
+        {% trans "Sign Up" %}
+    </div>
+    <div class="signup-desc">
+        {% blocktrans with provider_name=account.get_provider.name site_name=site.name %}
+            You are about to use your {{provider_name}} account to login to {{site_name}}.<br>
+            As a final step, please complete the following form:
+        {% endblocktrans %}
+    </div>
+    {% url 'socialaccount_signup' as action_url %}
+    <form class="signup-form" method="post" action="{{ action_url }}">
+        {% csrf_token %}
+        {% for field in form %}
+            <div class="form-group">
+                {{ field.label_tag }}
+                {{ field }}
+                {% if field.help_text %}
+                    <small style="color:#888;">{{ field.help_text }}</small>
+                {% endif %}
+                {% for error in field.errors %}
+                    <div style="color:#e63946; font-size:0.95em;">{{ error }}</div>
+                {% endfor %}
+            </div>
+        {% endfor %}
+        {{ redirect_field }}
+        <button type="submit" class="signup-btn">
+            {% trans "Sign Up" %}
+        </button>
+    </form>
+</div>
+{% endblock content %}

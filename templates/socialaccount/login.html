@@ -1,0 +1,76 @@
+{% extends "socialaccount/base_entrance.html" %}
+{% load i18n %}
+{% load allauth %}
+{% block head_title %}
+    {% trans "Sign In" %}
+{% endblock head_title %}
+{% block content %}
+<style>
+    .social-login-container {
+        max-width: 400px;
+        margin: 40px auto;
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+        padding: 2.5rem 2rem 2rem 2rem;
+        font-family: 'Segoe UI', Arial, sans-serif;
+        text-align: center;
+    }
+    .social-login-container h1 {
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+        color: #22223b;
+        font-weight: 700;
+    }
+    .social-login-container p {
+        color: #4a4e69;
+        margin-bottom: 2rem;
+        font-size: 1.1rem;
+    }
+    .social-login-container form {
+        margin-top: 1.5rem;
+    }
+    .social-login-container button[type="submit"] {
+        background: linear-gradient(90deg, #5f6caf 0%, #48b1f3 100%);
+        color: #fff;
+        border: none;
+        border-radius: 6px;
+        padding: 0.75rem 2.5rem;
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.2s;
+        box-shadow: 0 2px 8px rgba(72,177,243,0.08);
+    }
+    .social-login-container button[type="submit"]:hover {
+        background: linear-gradient(90deg, #48b1f3 0%, #5f6caf 100%);
+    }
+</style>
+<div class="social-login-container">
+    {% if process == "connect" %}
+        {% element h1 %}
+            {% blocktrans with provider.name as provider %}Connect {{ provider }}{% endblocktrans %}
+        {% endelement %}
+        {% element p %}
+            {% blocktrans with provider.name as provider %}You are about to connect a new third-party account from {{ provider }}.{% endblocktrans %}
+        {% endelement %}
+    {% else %}
+        {% element h1 %}
+            {% blocktrans with provider.name as provider %}Sign In Via {{ provider }}{% endblocktrans %}
+        {% endelement %}
+        {% element p %}
+            {% blocktrans with provider.name as provider %}You are about to sign in using a third-party account from {{ provider }}.{% endblocktrans %}
+        {% endelement %}
+    {% endif %}
+    <div>
+        {% element form method="post" no_visible_fields=True %}
+            {% slot actions %}
+                {% csrf_token %}
+                {% element button type="submit" %}
+                    {% trans "Continue" %}
+                {% endelement %}
+            {% endslot %}
+        {% endelement %}
+    </div>
+</div>
+{% endblock content %}

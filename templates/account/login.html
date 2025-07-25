@@ -1,0 +1,161 @@
+{% extends "account/base_entrance.html" %}
+{% load i18n %}
+{% load allauth account %}
+{% block head_title %}
+    {% trans "Sign In" %}
+{% endblock head_title %}
+{% block content %}
+    <style>
+        body {
+            background: linear-gradient(135deg, #e0e7ff 0%, #f8fafc 100%);
+        }
+        .login-container {
+            max-width: 400px;
+            margin: 3rem auto;
+            padding: 2.5rem 2rem 2rem 2rem;
+            background: #fff;
+            border-radius: 18px;
+            box-shadow: 0 6px 32px rgba(60,72,100,0.13);
+            border: 1px solid #e5e7eb;
+        }
+        .login-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+            text-align: center;
+        }
+        .login-desc {
+            color: #64748b;
+            font-size: 1.05em;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+        .login-fields {
+            margin-bottom: 1.5rem;
+        }
+        .login-btn {
+            width: 100%;
+            background: linear-gradient(90deg, #6366f1 0%, #3b82f6 100%);
+            color: #fff;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            padding: 0.75rem 0;
+            font-size: 1.1em;
+            transition: background 0.2s;
+        }
+        .login-btn:hover {
+            background: linear-gradient(90deg, #4f46e5 0%, #2563eb 100%);
+        }
+        .forgot-link {
+            display: block;
+            text-align: right;
+            margin-top: 0.5rem;
+            font-size: 0.97em;
+            color: #64748b;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        .forgot-link:hover {
+            color: #3b82f6;
+        }
+        .divider {
+            display: flex;
+            align-items: center;
+            text-align: center;
+            margin: 2rem 0 1.5rem 0;
+        }
+        .divider::before, .divider::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        .divider:not(:empty)::before {
+            margin-right: .75em;
+        }
+        .divider:not(:empty)::after {
+            margin-left: .75em;
+        }
+        .alt-btn-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+        .alt-btn {
+            background: #f1f5f9;
+            color: #334155;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 0.7rem 0;
+            font-weight: 500;
+            transition: background 0.2s, color 0.2s;
+        }
+        .alt-btn:hover {
+            background: #e0e7ff;
+            color: #6366f1;
+        }
+        .social-login {
+            margin-top: 2rem;
+        }
+    </style>
+    <div class="login-container">
+        {% element h1 class="login-title" %}
+            {% trans "Sign In" %}
+        {% endelement %}
+        {% if not SOCIALACCOUNT_ONLY %}
+            {% setvar link %}
+                <a href="{{ signup_url }}" style="color: #6366f1; text-decoration: underline;">
+            {% endsetvar %}
+            {% setvar end_link %}
+                </a>
+            {% endsetvar %}
+            {% element p class="login-desc" %}
+                {% blocktranslate %}If you have not created an account yet, then please {{ link }}sign up{{ end_link }} first.{% endblocktranslate %}
+            {% endelement %}
+            {% url 'account_login' as login_url %}
+            {% element form form=form method="post" action=login_url tags="entrance,login" %}
+                {% slot body %}
+                    {% csrf_token %}
+                    <div class="login-fields">
+                        {% element fields form=form unlabeled=True %}
+                        {% endelement %}
+                    </div>
+                    {{ redirect_field }}
+                {% endslot %}
+                {% slot actions %}
+                    <button type="submit" class="login-btn">
+                        {% trans "Sign In" %}
+                    </button>
+                {% endslot %}
+            {% endelement %}
+            <a href="{% url 'account_reset_password' %}" class="forgot-link">{% trans "Forgot password?" %}</a>
+        {% endif %}
+        {% if LOGIN_BY_CODE_ENABLED or PASSKEY_LOGIN_ENABLED %}
+            <div class="divider">{% trans "Or" %}</div>
+            <div class="alt-btn-group">
+                {% if PASSKEY_LOGIN_ENABLED %}
+                    <button type="submit" form="mfa_login" id="passkey_login" class="alt-btn">
+                        {% trans "Sign in with a passkey" %}
+                    </button>
+                {% endif %}
+                {% if LOGIN_BY_CODE_ENABLED %}
+                    <a href="{{ request_login_code_url }}" class="alt-btn">
+                        {% trans "Send me a sign-in code" %}
+                    </a>
+                {% endif %}
+            </div>
+        {% endif %}
+        {% if SOCIALACCOUNT_ENABLED %}
+            <div class="social-login">
+                {% include "socialaccount/snippets/login.html" with page_layout="entrance" %}
+            </div>
+        {% endif %}
+    </div>
+{% endblock content %}
+{% block extra_body %}
+    {{ block.super }}
+    {% if PASSKEY_LOGIN_ENABLED %}
+        {% include "mfa/webauthn/snippets/login_script.html" with button_id="passkey_login" %}
+    {% endif %}
+{% endblock %}
