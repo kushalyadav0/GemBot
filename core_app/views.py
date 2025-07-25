@@ -4,16 +4,16 @@ from django.shortcuts import render, HttpResponse
 from google import genai
 from .models import *
 from .forms import * 
+from django.contrib.auth.decorators import login_required
 
-# Create your views here.
-def index(request):
+# Create your views here.   
+@login_required
+def gembot_view(request):
     form = InputForm()
     if request.method == 'POST':
         form = InputForm(request.POST)
         
         if form.is_valid():
-        
-            history = Chat.objects.all()
             question = request.POST.get('question') 
 
             load_dotenv()
@@ -25,13 +25,18 @@ def index(request):
             contents= question
             )
             answer = response.text
-            history = Chat.objects.all()
-            form.save()
-            return render(request=request, template_name='index.html', context={'form': form,'response': answer,'question':question, 'history':history, 'answer':answer })
+            # creating a cht instance manually to assign request.user 
+            Chat.objects.create(
+               user=request.user,
+               question=question,
+               answer=answer
+           )
+            history= Chat.objects.filter(user=request.user).order_by('-timestamp')
+            return render(request,'index.html',{'form': InputForm,
+                                                'response': answer,
+                                                'question':question, 
+                                                'history':history,
+                                                })
     
-    return render(request=request, template_name='index.html', context={'form': form,})
-    
-
-def about(request):
-    pass 
-    
+    return render(request,'index.html', {'form': form,})
+   

@@ -3,31 +3,59 @@
 {% block title %}index{% endblock title %}
 
 {% block content %}
-<div class="item-centre ">
-    <div>
-        <ul>
+<div class="flex flex-col items-center min-h-screen bg-gradient-to-br from-blue-100 to-cyan-200 py-10">
+    <!-- Top bar with username and logout -->
+    <div class="w-full max-w-2xl flex justify-between items-center mb-6">
+        <div class="text-blue-900 font-semibold text-lg">
+            {% if user.is_authenticated %}
+                Logged in as {{ user.username }}
+            {% else %}
+                Not logged in
+            {% endif %}
+        </div>
+        {% if user.is_authenticated %}
+            <form action="{% url 'account_logout' %}" method="post">
+                {% csrf_token %}
+                <button type="submit" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded shadow transition duration-200">
+                    Logout
+                </button>
+            </form>
+        {% endif %}
+    </div>
+    <div class="w-full max-w-2xl bg-white rounded-xl shadow-lg p-8 mb-8">
+        <h2 class="text-2xl font-bold text-blue-700 mb-4 text-center">Chat History</h2>
+        <ul class="space-y-2">
             {% for hist in history %}
-            <li>{{hist.question}} - {{hist.response}} </li>
+            <li class="bg-blue-50 rounded p-3 shadow-sm">
+                <span class="font-semibold text-blue-900">{{ hist.question }}</span>
+                <span class="text-gray-500">→</span>
+                <span class="text-green-700">{{ hist.answer }}</span>
+            </li>
+            {% empty %}
+            <li class="text-gray-400 text-center">No history yet.</li>
             {% endfor %}
         </ul>
     </div>
-    <div id = 'chat'>
-        <div id="question">
-            {{question}}
+    <div id="chat" class="w-full max-w-2xl bg-white rounded-xl shadow-lg p-8 mb-8">
+        <div id="question" class="p-4 mb-4 bg-blue-100 rounded shadow text-lg font-semibold text-blue-800">
+            {{ question }}
         </div>
-        <div id="answer">
-            {{response}}
+        <div id="answer" class="p-4 bg-green-100 rounded shadow text-base text-green-900">
+            {{ response }}
         </div>
-       
     </div>
-
-    <div id = 'input'>
-        <p class="bg-cyan-600"><b>Ask whatever tou want-</b></p>
-        <form action="" method="post">
+    <div id="input" class="w-full max-w-2xl bg-white rounded-xl shadow-lg p-8">
+        <p class="bg-cyan-600 text-white rounded px-4 py-2 mb-4 text-center font-semibold">
+            Ask whatever you want
+        </p>
+        <form action="" method="post" class="space-y-4">
             {% csrf_token %}
-            {{form.as_p}}
-            <button type="submit" class='bg-orange-500'>Answer</button>
-
+            <div>
+                {{ form.as_p }}
+            </div>
+            <button type="submit" class="w-full py-2 px-4 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded shadow transition duration-200">
+                Answer
+            </button>
         </form>
     </div>
 </div>

@@ -20,6 +20,7 @@ from django.urls import path, include
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('core_app.urls')),
+     path('accounts/', include('allauth.urls')),
 
     # path responsible for auto_reloading/hot_reloading. we will remove these hot_reload and all these things in production, we just need these for development. these things like hot_reload and taileind gt build in the production.
     path("__reload__/", include("django_browser_reload.urls")),

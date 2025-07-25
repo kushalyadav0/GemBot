@@ -15,6 +15,7 @@ distro==1.9.0
 Django==5.2.1
 django-allauth==65.9.0
 django-browser-reload==1.18.0
+django-extensions==4.1
 django-tailwind==4.0.1
 google-auth==2.40.2
 google-genai==1.16.1
@@ -28,6 +29,7 @@ markdown-it-py==3.0.0
 MarkupSafe==3.0.2
 mdurl==0.1.2
 oauthlib==3.2.2
+openai==1.82.0
 pyasn1==0.6.1
 pyasn1_modules==0.4.2
 pycparser==2.22
