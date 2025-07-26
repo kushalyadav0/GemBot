@@ -2,11 +2,131 @@
 
 {% block title %}index{% endblock title %}
 
+{% block style %}
+<style>
+body {
+    font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+    background: linear-gradient(135deg, #e0f2fe 0%, #a7f3d0 100%);
+    min-height: 100vh;
+}
+.gembot-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    padding: 40px 0;
+}
+.gembot-topbar {
+    width: 100%;
+    max-width: 700px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    background: rgba(255,255,255,0.85);
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    padding: 16px 32px;
+}
+.gembot-card {
+    width: 100%;
+    max-width: 700px;
+    background: #fff;
+    border-radius: 18px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.07);
+    padding: 32px;
+    margin-bottom: 32px;
+    transition: box-shadow 0.2s;
+}
+.gembot-card:hover {
+    box-shadow: 0 8px 32px rgba(0,0,0,0.10);
+}
+.gembot-history-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+.gembot-history-list li {
+    background: linear-gradient(90deg, #f0f9ff 60%, #d1fae5 100%);
+    border-radius: 10px;
+    padding: 14px 18px;
+    margin-bottom: 10px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.03);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.gembot-history-list li:last-child {
+    margin-bottom: 0;
+}
+.gembot-question {
+    background: #e0f2fe;
+    border-left: 5px solid #2563eb;
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 18px;
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: #1e3a8a;
+    box-shadow: 0 1px 4px rgba(37,99,235,0.07);
+}
+.gembot-answer {
+    background: #d1fae5;
+    border-left: 5px solid #059669;
+    border-radius: 8px;
+    padding: 16px;
+    font-size: 1rem;
+    color: #065f46;
+    box-shadow: 0 1px 4px rgba(16,185,129,0.07);
+}
+.gembot-input-card {
+    background: #fff;
+    border-radius: 18px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.07);
+    padding: 32px;
+    width: 100%;
+    max-width: 700px;
+}
+.gembot-input-card p {
+    background: linear-gradient(90deg, #06b6d4 60%, #2563eb 100%);
+    color: #fff;
+    border-radius: 8px;
+    padding: 12px 0;
+    margin-bottom: 18px;
+    text-align: center;
+    font-weight: 600;
+    font-size: 1.1rem;
+    letter-spacing: 0.02em;
+}
+.gembot-input-card button[type="submit"] {
+    width: 100%;
+    padding: 12px 0;
+    background: linear-gradient(90deg, #f59e42 60%, #f97316 100%);
+    color: #fff;
+    font-weight: bold;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(251,146,60,0.08);
+    font-size: 1.1rem;
+    transition: background 0.2s;
+    border: none;
+}
+.gembot-input-card button[type="submit"]:hover {
+    background: linear-gradient(90deg, #ea580c 60%, #f59e42 100%);
+}
+@media (max-width: 800px) {
+    .gembot-card, .gembot-input-card, .gembot-topbar {
+        max-width: 98vw;
+        padding: 18px;
+    }
+}
+</style>
+{% endblock %}
+
 {% block content %}
-<div class="flex flex-col items-center min-h-screen bg-gradient-to-br from-blue-100 to-cyan-200 py-10">
+<div class="gembot-container">
     <!-- Top bar with username and logout -->
-    <div class="w-full max-w-2xl flex justify-between items-center mb-6">
-        <div class="text-blue-900 font-semibold text-lg">
+    <div class="gembot-topbar">
+        <div style="color:#1e3a8a; font-weight:600; font-size:1.1rem;">
             {% if user.is_authenticated %}
                 Logged in as {{ user.username }}
             {% else %}
@@ -14,38 +134,38 @@
             {% endif %}
         </div>
         {% if user.is_authenticated %}
-            <form action="{% url 'account_logout' %}" method="post">
+            <form action="{% url 'account_logout' %}" method="post" style="margin:0;">
                 {% csrf_token %}
-                <button type="submit" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded shadow transition duration-200">
+                <button type="submit" style="background:#ef4444; color:#fff; font-weight:600; padding:8px 18px; border-radius:7px; border:none; box-shadow:0 1px 4px rgba(239,68,68,0.08); transition:background 0.2s; cursor:pointer;">
                     Logout
                 </button>
             </form>
         {% endif %}
     </div>
-    <div class="w-full max-w-2xl bg-white rounded-xl shadow-lg p-8 mb-8">
-        <h2 class="text-2xl font-bold text-blue-700 mb-4 text-center">Chat History</h2>
-        <ul class="space-y-2">
+    <div class="gembot-card">
+        <h2 style="color:#2563eb; font-size:1.5rem; font-weight:700; margin-bottom:18px; text-align:center;">Chat History</h2>
+        <ul class="gembot-history-list">
             {% for hist in history %}
-            <li class="bg-blue-50 rounded p-3 shadow-sm">
-                <span class="font-semibold text-blue-900">{{ hist.question }}</span>
-                <span class="text-gray-500">→</span>
-                <span class="text-green-700">{{ hist.answer }}</span>
+            <li>
+                <span style="font-weight:600; color:#1e3a8a;">{{ hist.question }}</span>
+                <span style="color:#64748b;">→</span>
+                <span style="color:#059669;">{{ hist.answer }}</span>
             </li>
             {% empty %}
-            <li class="text-gray-400 text-center">No history yet.</li>
+            <li style="color:#94a3b8; text-align:center;">No history yet.</li>
             {% endfor %}
         </ul>
     </div>
-    <div id="chat" class="w-full max-w-2xl bg-white rounded-xl shadow-lg p-8 mb-8">
-        <div id="question" class="p-4 mb-4 bg-blue-100 rounded shadow text-lg font-semibold text-blue-800">
+    <div id="chat" class="gembot-card" style="margin-bottom:32px;">
+        <div id="question" class="gembot-question">
             {{ question }}
         </div>
-        <div id="answer" class="p-4 bg-green-100 rounded shadow text-base text-green-900">
+        <div id="answer" class="gembot-answer">
             {{ response }}
         </div>
     </div>
-    <div id="input" class="w-full max-w-2xl bg-white rounded-xl shadow-lg p-8">
-        <p class="bg-cyan-600 text-white rounded px-4 py-2 mb-4 text-center font-semibold">
+    <div id="input" class="gembot-input-card">
+        <p>
             Ask whatever you want
         </p>
         <form action="" method="post" class="space-y-4">
@@ -53,7 +173,7 @@
             <div>
                 {{ form.as_p }}
             </div>
-            <button type="submit" class="w-full py-2 px-4 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded shadow transition duration-200">
+            <button type="submit">
                 Answer
             </button>
         </form>
