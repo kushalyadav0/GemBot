@@ -44,7 +44,6 @@ INSTALLED_APPS = [
     'theme',
     'django_browser_reload',
 
-    'django.contrib.sites',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
@@ -84,20 +83,9 @@ SOCIALACCOUNT_PROVIDERS = {
             'client_id': GOOGLE_CLIENT_ID,
             'secret': GOOGLE_CLIENT_SECRET,
             'key': ''
-        },
-        'SCOPE': [
-            'profile',
-            'email',
-        ],
-        'AUTH_PARAMS': {
-            'access_type': 'online',
         }
     }
 }
-
-AUTH_USER_MODEL = 'core_app.CustomUser'
-ACCOUNT_LOGIN_METHODS = {'email'}
-ACCOUNT_SIGNUP_FIELDS = ['email*', 'password1*', 'password2*']
 
 ROOT_URLCONF = 'core.urls'
 
@@ -184,7 +172,6 @@ STATICFILES_DIR =[
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-LOGIN_URL = '/accounts/login'
-LOGOUT_URL = '/accounts/logout'
+LOGOUT_URL = '/accounts/logout/'
 LOGIN_REDIRECT_URL = ''
 LOGOUT_REDIRECT_URL = "/accounts/login/"
